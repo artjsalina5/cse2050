@@ -23,10 +23,12 @@ def main():
             waitlist.seat_customer()
         elif choice == '3':
             name = input("Enter the customer's name to change the reservation: ")
+            old_time = input("Enter the old time of the reservation (HH:MM): ")
             new_time = input("Enter the new time of the reservation (HH:MM): ")
-            waitlist.change_reservation(name, new_time)
+            waitlist.change_reservation(name, old_time, new_time)
         elif choice == '4':
-            waitlist.peek_next_customer()
+            message = waitlist.peek_next_customer()
+            print(message)
         elif choice == '5':
             waitlist.print_reservation_list()
         elif choice == '6':

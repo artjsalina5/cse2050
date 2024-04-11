@@ -1,5 +1,7 @@
 #waitlist.py
 from datetime import datetime
+
+
 class Entry:
     def __init__(self, item, priority):
         self.priority = priority
@@ -8,13 +10,10 @@ class Entry:
     def __lt__(self, other):
         return self.priority < other.priority
 
+
 class HeapPQ:
     def __init__(self):
         self._entries = []
-
-    def insert(self, item, priority):
-        self._entries.append(Entry(item, priority))
-        self._upheap(len(self._entries) - 1)
 
     def _parent(self, i):
         return (i - 1) // 2
@@ -38,19 +37,11 @@ class HeapPQ:
     def findmin(self):
         return self._entries[0].item
 
-    def removemin(self):
-        L = self._entries
-        item = L[0].item
-        L[0] = L[-1]
-        L.pop()
-        self._downheap(0)
-        return item
-
     def _downheap(self, i):
         L = self._entries
         children = self._children(i)
         if children:
-            child = min(children, key = lambda x: L[x])
+            child = min(children, key=lambda x: L[x])
             if L[child] < L[i]:
                 self._swap(i, child)
                 self._downheap(child)
@@ -62,21 +53,24 @@ class HeapPQ:
         n = len(self._entries)
         for i in reversed(range(n)):
             self._downheap(i)
+
+
 class PriorityQueue(HeapPQ):
     def __init__(self,
-                 items = (),
-                 entries = (),
-                 key = lambda x: x):
+                 items=(),
+                 entries=(),
+                 key=lambda x: x):
         self._key = key
         self._entries = [Entry(i, p) for i, p in entries]
         self._entries.extend([Entry(i, key(i)) for i in items])
-        self._itemmap = {entry.item : index
+        self._itemmap = {entry.item: index
                          for index, entry in enumerate(self._entries)}
         self._heapify()
 
-    def insert(self, item, priority = None):
+    def insert(self, item, priority=None):
         if priority is None:
-            priority = self._key(item)
+            priority = self._key(
+                {'name': item[0], 'time': item[1]})  # convert tuple back to dictionary for priority calculation
         index = len(self._entries)
         self._entries.append(Entry(item, priority))
         self._itemmap[item] = index
@@ -90,7 +84,7 @@ class PriorityQueue(HeapPQ):
         self._itemmap[vb] = a
         L[a], L[b] = L[b], L[a]
 
-    def changepriority(self, item, priority = None):
+    def changepriority(self, item, priority=None):
         if priority is None:
             priority = self._key(item)
         i = self._itemmap[item]
@@ -115,13 +109,14 @@ class PriorityQueue(HeapPQ):
         self._remove_at_index(self._itemmap[item])
 
     def __iter__(self):
-        return self
+        return iter(self._entries)
 
     def __next__(self):
         if len(self) > 0:
             return self.removemin()
         else:
             raise StopIteration
+
 
 class WaitList:
     def __init__(self):
@@ -135,8 +130,7 @@ class WaitList:
     def add_customer(self, name, time):
         try:
             datetime.strptime(time, '%H:%M')  # Validate time format
-            reservation = {'name': name, 'time': time}
-            self.pq.insert(reservation)
+            self.pq.insert((name, time))  # directly pass a tuple to the insert method
             print(f"{name} has been added to the waitlist at {time}")
         except ValueError:
             print("Invalid time format. Please use HH:MM format.")
@@ -144,25 +138,38 @@ class WaitList:
     def seat_customer(self):
         if len(self.pq) > 0:
             customer = self.pq.removemin()
-            print(f"Seating {customer['name']} with a reservation at {customer['time']}")
+            name, time = customer  # Unpack the tuple
+            print(f"Seating {name} with a reservation at {time}")
         else:
             print("No customers to seat.")
 
-    def change_reservation(self, name, new_time):
-        # Note: This will require a custom implementation as the PriorityQueue
-        # does not support direct updating by key. You would need to remove
-        # and re-insert the item or use another method to update.
-        # This is a placeholder for the function.
-        print("Change reservation functionality needs to be implemented.")
+    def change_reservation(self, name, time, new_time):
+        # Validate new_time format
+        try:
+            datetime.strptime(new_time, '%H:%M')
+        except ValueError:
+            print("Invalid time format. Please use HH:MM format.")
+            return
+
+        # Change the reservation if it exists
+        if (name, time) in self.pq._itemmap:
+            self.pq.remove((name, time))
+            self.pq.insert((name, new_time))
+            print(f"{name}'s reservation time has been changed to {new_time}")
+        else:
+            print(f"No reservation found for {name} at {time}")
 
     def peek_next_customer(self):
         if len(self.pq) > 0:
             customer = self.pq.findmin()
-            print(f"The next customer on the waitlist is: {customer['name']}, reservation time: {customer['time']}")
+            name, time = customer  # Unpack the tuple
+            return f"The next customer on the waitlist is: {name}, reservation time: {time}"
         else:
-            print("No customers in the waitlist.")
-
+            return "No customers in the waitlist."
     def print_reservation_list(self):
         print("Current reservation list:")
         for customer in self.pq:
-            print(f"{customer['name']} at {customer['time']}")
+            name, time = customer.item  # Change it to just 'customer'
+            print(f"{name} at {time}")
+
+
