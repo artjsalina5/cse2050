@@ -131,17 +131,17 @@ class WaitList:
         try:
             datetime.strptime(time, '%H:%M')  # Validate time format
             self.pq.insert((name, time))  # directly pass a tuple to the insert method
-            print(f"{name} has been added to the waitlist at {time}")
+            return f"{name} has been added to the waitlist at {time}"
         except ValueError:
-            print("Invalid time format. Please use HH:MM format.")
+            return f"Invalid time format. Please use HH:MM format."
 
     def seat_customer(self):
         if len(self.pq) > 0:
             customer = self.pq.removemin()
             name, time = customer  # Unpack the tuple
-            print(f"Seating {name} with a reservation at {time}")
+            return f"Seating {name} with a reservation at {time}"
         else:
-            print("No customers to seat.")
+            return f"No customers to seat."
 
     def change_reservation(self, name, time, new_time):
         # Validate new_time format
@@ -155,9 +155,9 @@ class WaitList:
         if (name, time) in self.pq._itemmap:
             self.pq.remove((name, time))
             self.pq.insert((name, new_time))
-            print(f"{name}'s reservation time has been changed to {new_time}")
+            return f"{name}'s reservation time has been changed to {new_time}"
         else:
-            print(f"No reservation found for {name} at {time}")
+            return f"No reservation found for {name} at {time}"
 
     def peek_next_customer(self):
         if len(self.pq) > 0:
