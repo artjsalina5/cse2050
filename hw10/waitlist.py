@@ -56,10 +56,8 @@ class HeapPQ:
 
 
 class PriorityQueue(HeapPQ):
-    def __init__(self,
-                 items=(),
-                 entries=(),
-                 key=lambda x: x):
+    def __init__(self, items=(), entries=(), key=lambda x: x):
+        super().__init__()
         self._key = key
         self._entries = [Entry(i, p) for i, p in entries]
         self._entries.extend([Entry(i, key(i)) for i in items])

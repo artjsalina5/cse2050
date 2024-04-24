@@ -30,6 +30,26 @@ class Graph(Digraph):
         E = {frozenset(e) for e in Digraph.edges(self)}
         return iter(E)
 
+    def DFS(G, start, goal):
+        stack = [(start, [start])]
+        while stack:
+            (vertex, path) = stack.pop()
+            for next in frozenset(G.nbrs(vertex)) - frozenset(path):
+                if next == goal:
+                    yield path + [next]
+                else:
+                    stack.append((next, path + [next]))
+
+    def BFS(G, start, goal):
+        queue = [(start, [start])]
+        while queue:
+            (vertex, path) = queue.pop(0)
+            for next in frozenset(G.nbrs(vertex)) - frozenset(path):
+                if next == goal:
+                    yield path + [next]
+                else:
+                    queue.append((next, path + [next]))
+
 
 def list_to_graph(L):
     vertices = set(range(1, len(L) + 1))
@@ -99,4 +119,24 @@ print('------------------')
 G.addedge(3, 2, 1.1)
 G.addedge(2, 4, 7)
 G.addedge(1, 4, 2)
-shortestpaths(G, 2)
+G.addvertex(1)
+G.addvertex(2)
+G.addvertex(3)
+G.addvertex(4)
+G.addvertex(5)
+
+G.addedge(1, 2)
+G.addedge(1, 3)
+G.addedge(2, 4)
+G.addedge(2, 5)
+G.addedge(3, 5)
+print(G)
+# run DFS and BFS from node 1 to 5
+print("DFS:")
+for path in G.DFS(1, 5):
+    print(path)
+
+print("\nBFS:")
+for path in G.BFS(1, 5):
+    print(path)
+

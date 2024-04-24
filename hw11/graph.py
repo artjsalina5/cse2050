@@ -100,3 +100,4 @@ G.addedge(3, 2, 1.1)
 G.addedge(2, 4, 7)
 G.addedge(1, 4, 2)
 shortestpaths(G, 2)
+
