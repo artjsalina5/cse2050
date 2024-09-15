@@ -75,17 +75,6 @@ To succeed, I adopted several strategies:
 
 ---
 
-## 🛠 **Projects**
-
-Throughout the semester, I worked on various projects that allowed me to apply the concepts learned in class. Each project challenged me to think critically about data structures and algorithm design. Below are the projects I completed, along with links to the code and reports.
-
-1. **Project 1**: Basic Python Exercises ([Code](#) | [Report](#))
-2. **Project 2**: Implementing Data Structures ([Code](#) | [Report](#))
-3. **Project 3**: Algorithm Analysis ([Code](#) | [Report](#))
-4. *(More projects will be added as the course progresses!)*
-
----
-
 ## 📝 **Assignments and Labs**
 
 - **Labs**: Weekly collaborative programming assignments, completed in pairs but submitted individually.
